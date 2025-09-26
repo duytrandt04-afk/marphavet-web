@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 export const useProductStore = create((set) => ({
 	products: [],
+	selectedProduct: null,
 	setProducts: (products) => set({ products }),
 	createProduct: async (newProduct) => {
 		if (!newProduct.name || !newProduct.image || !newProduct.price) {
@@ -23,6 +24,19 @@ export const useProductStore = create((set) => ({
 		const data = await res.json();
 		set({ products: data.data });
 	},
+
+	fetchProductById: async (pid) => {
+		const res = await fetch(`/api/products/${pid}`);
+		const data = await res.json();
+
+		if (!data.success) {
+			return { success: false, message: data.message };
+		}
+
+		set({ selectedProduct: data.data });
+		return { success: true, data: data.data };
+	},
+
 	deleteProduct: async (pid) => {
 		const res = await fetch(`/api/products/${pid}`, {
 			method: "DELETE",
@@ -30,7 +44,6 @@ export const useProductStore = create((set) => ({
 		const data = await res.json();
 		if (!data.success) return { success: false, message: data.message };
 
-		// update the ui immediately, without needing a refresh
 		set((state) => ({ products: state.products.filter((product) => product._id !== pid) }));
 		return { success: true, message: data.message };
 	},
@@ -45,7 +58,6 @@ export const useProductStore = create((set) => ({
 		const data = await res.json();
 		if (!data.success) return { success: false, message: data.message };
 
-		// update the ui immediately, without needing a refresh
 		set((state) => ({
 			products: state.products.map((product) => (product._id === pid ? data.data : product)),
 		}));

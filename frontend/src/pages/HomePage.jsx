@@ -10,7 +10,6 @@ const HomePage = () => {
 	useEffect(() => {
 		fetchProducts();
 	}, [fetchProducts]);
-	console.log("products", products);
 
 	return (
 		<Container maxW='container.xl' py={12}>
@@ -22,7 +21,7 @@ const HomePage = () => {
 					bgClip={"text"}
 					textAlign={"center"}
 				>
-					Current Products 🚀
+					Sản Phẩm
 				</Text>
 
 				<SimpleGrid
