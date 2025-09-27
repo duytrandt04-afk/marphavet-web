@@ -1,6 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Image, Heading, Text, Spinner } from "@chakra-ui/react";
+import {
+    Box,
+    Image,
+    Heading,
+    Text,
+    Input,
+    VStack,
+    HStack,
+    Spinner,
+    Divider,
+    Button,
+    useColorModeValue,
+    FormControl,
+    FormLabel,
+    useToast,
+    Container,
+} from "@chakra-ui/react";
+import { useCustomer } from "../store/customer";
 import { useProductStore } from "../store/product";
 
 const ProductPage = () => {
@@ -14,25 +31,118 @@ const ProductPage = () => {
         await fetchProductById(id);
         setLoading(false);
     };
-
     if (id) loadProduct();
     }, [id, fetchProductById]);
 
-    if (loading) return null;
+    const [newCustomer, setnewCustomer] = useState({
+		name: "",
+		phoneNumber: "",
+		address: "",
+        product: id,
+	});
+	const toast = useToast();
 
-    if (!selectedProduct) return <Box p={8}>Product not found 😢</Box>;
+	const { createCustomer } = useCustomer();
+
+    const handleAddCustomer = async () => {
+		const { success, message } = await createCustomer(newCustomer);
+		if (!success) {
+			toast({
+				title: "Error",
+				description: message,
+				status: "error",
+				isClosable: true,
+			});
+		} else {
+			toast({
+				title: "Success",
+				description: message,
+				status: "success",
+				isClosable: true,
+			});
+		}
+		setnewCustomer({ name: "", phoneNumber: "", address: "" });
+	};
 
     return (
-    <Box p={8}>
-        <Image src={selectedProduct.image} alt={selectedProduct.name} maxH="300px" objectFit="cover" />
-        <Heading mt={4}>{selectedProduct.name}</Heading>
-        <Text fontSize="xl" mt={2} color="gray.600">
-            ${selectedProduct.price}
-        </Text>
-        <Text fontSize="xl" mt={2}>
-            {selectedProduct.description}
-        </Text>
-    </Box>
+        <Box
+            maxW="4xl"
+            mx="auto"
+            p={8}
+            bg={useColorModeValue("white", "gray.800")}
+            rounded="2xl"
+            shadow="lg"
+        >
+            {loading ? (
+            <HStack justify="center" minH="50vh">
+                <Spinner size="xl" />
+            </HStack>
+            ) : !selectedProduct ? (
+                <Box p={8}>Product not found 😢</Box>
+            ) : (
+                <Container>
+                    <HStack spacing={8} align="flex-start" flexDir={{ base: "column", md: "row" }}>
+                        <Image
+                            src={selectedProduct.image}
+                            alt={selectedProduct.name}
+                            maxH="300px"
+                            rounded="lg"
+                            objectFit="cover"
+                            flex="1"
+                        />
+                        <VStack align="start" spacing={4} flex="2">
+                            <Heading>{selectedProduct.name}</Heading>
+                            <Text fontSize="2xl" color="blue.500" fontWeight="bold">
+                                ${selectedProduct.price}
+                            </Text>
+                            <Text color="gray.600">{selectedProduct.description}</Text>
+                        </VStack>
+                    </HStack>
+
+                    <Divider my={8} />
+
+                    <Box>
+                        <Heading size="md" mb={4}>
+                            Đặt hàng ngay 🚀
+                        </Heading>
+                        <VStack spacing={4} align="stretch">
+
+                            <FormControl>
+                                <FormLabel>Họ và tên</FormLabel>
+                                <Input
+                                    placeholder="Nhập họ và tên của bạn" 
+                                    value={newCustomer.name}
+                                    onChange={(e) => setnewCustomer({ ...newCustomer, name: e.target.value })}
+                                />
+                            </FormControl>
+
+                            <FormControl>
+                                <FormLabel>Số điện thoại</FormLabel>
+                                <Input 
+                                    type="number" 
+                                    placeholder="Nhập số điện thoại"
+                                    value={newCustomer.phoneNumber}
+                                    onChange={(e) => setnewCustomer({ ...newCustomer, phoneNumber: e.target.value })} 
+                                />
+                            </FormControl>
+
+                            <FormControl>
+                                <FormLabel>Địa chỉ</FormLabel>
+                                <Input 
+                                    placeholder="Nhập địa chỉ giao hàng"
+                                    value={newCustomer.address}
+                                    onChange={(e) => setnewCustomer({ ...newCustomer, address: e.target.value })} 
+                                />
+                            </FormControl>
+
+                            <Button colorScheme="blue" size="lg" rounded="lg" onClick={handleAddCustomer}>
+                                Xác nhận đặt hàng
+                            </Button>
+                        </VStack>
+                    </Box>
+                </Container>
+            )}
+        </Box>
     );
 };
 

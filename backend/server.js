@@ -5,6 +5,7 @@ import path from "path";
 import { connectDB } from "./config/db.js";
 
 import productRoutes from "./routes/product.route.js";
+import customerRoutes from "./routes/customer.route.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ const __dirname = path.resolve();
 app.use(express.json());
 
 app.use("/api/products", productRoutes);
+app.use("/api/customers", customerRoutes);
 
 if (process.env.NODE_ENV === "production") {
 	app.use(express.static(path.join(__dirname, "/frontend/dist")));

@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import CreatePage from "./pages/CreatePage";
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
+import CustomersMangementPage from "./pages/CustomersMangementPage";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
 				<Route path="/" element={<HomePage />} />
 				<Route path="/create" element={<CreatePage />} />
 				<Route path="/product/:id" element={<ProductPage />} />
+				<Route path="/customers/" element={<CustomersMangementPage />} />
 				</Routes>
 		</Box>
 	);

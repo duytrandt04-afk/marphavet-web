@@ -83,7 +83,7 @@ const ProductCard = ({ product }) => {
 					<IconButton
 						icon={<EditIcon />}
 						onClick={(e) => {
-							e.stopPropagation(); // prevent card click
+							e.stopPropagation(); 
 							onOpen();
 						}}
 						colorScheme="blue"
@@ -91,7 +91,7 @@ const ProductCard = ({ product }) => {
 					<IconButton
 						icon={<DeleteIcon />}
 						onClick={(e) => {
-							e.stopPropagation(); // prevent card click
+							e.stopPropagation(); 
 							handleDeleteProduct(product._id);
 						}}
 						colorScheme="red"
