@@ -27,7 +27,10 @@ const ProductPage = () => {
         <Image src={selectedProduct.image} alt={selectedProduct.name} maxH="300px" objectFit="cover" />
         <Heading mt={4}>{selectedProduct.name}</Heading>
         <Text fontSize="xl" mt={2} color="gray.600">
-        ${selectedProduct.price}
+            ${selectedProduct.price}
+        </Text>
+        <Text fontSize="xl" mt={2}>
+            {selectedProduct.description}
         </Text>
     </Box>
     );

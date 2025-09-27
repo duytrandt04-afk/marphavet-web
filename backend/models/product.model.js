@@ -14,9 +14,13 @@ const productSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		description: {
+			type: String,
+			require: true,
+		}
 	},
 	{
-		timestamps: true, // createdAt, updatedAt
+		timestamps: true,
 	}
 );
 
