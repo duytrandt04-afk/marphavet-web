@@ -18,7 +18,12 @@ const customerSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Product",
             required: true,
-        }
+        },
+        status: {
+            type: String,
+            enum: ["pending", "processing", "done"],
+            default: "pending",
+        },
     },
     {
         timestamps: true,

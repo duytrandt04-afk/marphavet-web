@@ -40,3 +40,28 @@ export const deleteCustomer = async (req, res) => {
 		res.status(500).json({ success: false, message: "Server Error" });
 	}
 }
+
+export const updateCustomerStatus = async (req, res) => {
+	const { id } = req.params;
+	const { status } = req.body;
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		return res.status(404).json({ success: false, message: "Invalid Customer Id" });
+	}
+	if (!["pending", "processing", "done"].includes(status)) {
+		return res.status(400).json({ success: false, message: "Invalid status value" });
+	}
+	try {
+		const updatedCustomer = await Customer.findByIdAndUpdate(
+			id,
+			{ status },
+			{ new: true }
+		);
+		if (!updatedCustomer) {
+			return res.status(404).json({ success: false, message: "Customer not found" });
+		}
+		res.status(200).json({ success: true, data: updatedCustomer });
+	} catch (error) {
+		console.log("Error in updating customer status:", error.message);
+		res.status(500).json({ success: false, message: "Server Error" });
+	}
+}

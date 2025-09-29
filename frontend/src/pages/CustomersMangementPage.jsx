@@ -4,13 +4,10 @@ import CustomersTable from "../components/CustomersTable";
 
 const CustomersManagementPage = () => {
     const { customers, fetchCustomers } = useCustomer();
-    const { deleteCustomer } = useCustomer();
 
     useEffect(() => {
         fetchCustomers();
     }, [fetchCustomers]);
-
-
 
     return (
         <div>

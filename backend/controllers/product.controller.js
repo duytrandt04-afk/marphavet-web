@@ -31,8 +31,17 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
 	const product = req.body;
 
-	if (!product.name || !product.price || !product.image || !product.description) {
-		return res.status(400).json({ success: false, message: "Please provide all fields" });
+	if (
+		!product.name ||
+		!product.price ||
+		!product.images ||
+		!Array.isArray(product.images) ||
+		product.images.length === 0 ||
+		!product.description
+	) {
+	return res
+		.status(400)
+		.json({ success: false, message: "Please provide all fields" });
 	}
 
 	const newProduct = new Product(product);

@@ -61,7 +61,7 @@ const ProductPage = () => {
 				isClosable: true,
 			});
 		}
-		setnewCustomer({ name: "", phoneNumber: "", address: "" });
+		setnewCustomer({ name: "", phoneNumber: "", address: "", product: id });
 	};
 
     return (
@@ -82,14 +82,23 @@ const ProductPage = () => {
             ) : (
                 <Container>
                     <HStack spacing={8} align="flex-start" flexDir={{ base: "column", md: "row" }}>
-                        <Image
-                            src={selectedProduct.image}
-                            alt={selectedProduct.name}
-                            maxH="300px"
-                            rounded="lg"
-                            objectFit="cover"
-                            flex="1"
-                        />
+                        <HStack spacing={4} flex="1" overflowX="auto">
+                            {selectedProduct.images && selectedProduct.images.length > 0 ? (
+                                selectedProduct.images.map((img, idx) => (
+                                    <Image
+                                        key={idx}
+                                        src={img}
+                                        alt={`${selectedProduct.name} ${idx + 1}`}
+                                        maxH="300px"
+                                        rounded="lg"
+                                        objectFit="cover"
+                                    />
+                                ))
+                            ) : (
+                                <Text>No images available</Text>
+                            )}
+                        </HStack>
+
                         <VStack align="start" spacing={4} flex="2">
                             <Heading>{selectedProduct.name}</Heading>
                             <Text fontSize="2xl" color="blue.500" fontWeight="bold">
@@ -98,7 +107,7 @@ const ProductPage = () => {
                             <Text color="gray.600">{selectedProduct.description}</Text>
                         </VStack>
                     </HStack>
-
+                    
                     <Divider my={8} />
 
                     <Box>

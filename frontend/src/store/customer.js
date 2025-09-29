@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export const useCustomer = create((set) => ({
-  customers: [], // Initialize as empty array instead of null
+  customers: [],
   selectedCustomer: null,
   loading: false,
   error: null,
@@ -12,7 +12,6 @@ export const useCustomer = create((set) => ({
     if (!newCustomer.name || !newCustomer.phoneNumber || !newCustomer.address || !newCustomer.product) {
       return { success: false, message: "Please fill in all fields." };
     }
-
     try {
       set({ loading: true, error: null });
       
@@ -44,6 +43,7 @@ export const useCustomer = create((set) => ({
       return { success: false, message: error.message };
     }
   },
+
   fetchCustomers: async () => {
     try {
       set({ loading: true, error: null });
@@ -66,14 +66,47 @@ export const useCustomer = create((set) => ({
       set({ loading: false, error: error.message, customers: [] });
     }
   },
+
   deleteCustomer: async (customerId) => {
     const res = await fetch(`/api/customers/${customerId}`, {
       method: "DELETE",
     });
     const data = await res.json();
-    if (!data.success) return { success: false, message: data.message };
+    if (!data.success) return { success: false, message: "Xoá khách hàng thành công" };
 
     set((state) => ({ customers: state.customers.filter((customer) => customer._id !== customerId) }));
     return { success: true, message: data.message };
-  }
+  },
+
+  updateCustomerStatus: async (customerId, status) => {
+    try {
+      const res = await fetch(`/api/customers/${customerId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (data.success) {
+        set((state) => ({
+          customers: state.customers.map((customer) =>
+            customer._id === customerId ? { ...customer, status } : customer
+          ),
+        }));
+        return { success: true, message: "Customer status updated successfully" };
+      } else {
+        throw new Error(data.message || "Failed to update customer status");
+      }
+    } catch (error) {
+      console.error("Error updating customer status:", error);
+      return { success: false, message: error.message };
+    }
+  },
 }));
